@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>河北移动 · 社会渠道酬金计算器</title>
+<style>
+:root{
+  --ink:#0f2233;--ink2:#3a5066;--muted:#7488a0;
+  --line:#dbe4ee;--line2:#eef3f8;
+  --bg:#f4f7fb;--panel:#fff;
+  --brand:#0a6ed1;--brand-dk:#064a8e;--brand-soft:#e8f2fc;
+  --accent:#08a89a;--accent-soft:#e2f6f3;
+  --warn:#c2410c;--warn-soft:#fdeee4;
+  --gold:#b8860b;--gold-soft:#fbf3dd;
+  --money:#0b6b3a;
+  --radius:12px;
+  --sh:0 1px 2px rgba(16,40,64,.06),0 6px 20px rgba(16,40,64,.06);
+  --shh:0 6px 28px rgba(10,110,209,.16);
+  --mono:"SF Mono","Roboto Mono","JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --sans:"PingFang SC","Microsoft YaHei","Source Han Sans SC","Noto Sans SC",-apple-system,system-ui,sans-serif;
+}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);
+  background-image:radial-gradient(circle at 12% -8%,#e6f0fb 0,rgba(244,247,251,0) 38%),
+                   radial-gradient(circle at 92% 0%,#e2f6f3 0,rgba(244,247,251,0) 34%);
+  background-attachment:fixed;-webkit-font-smoothing:antialiased;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px 80px}
+header.top{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.86);
+  backdrop-filter:saturate(140%) blur(10px);border-bottom:1px solid var(--line)}
+.top-in{max-width:1180px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:11px}
+.logo .mark{width:38px;height:38px;border-radius:10px;flex:0 0 auto;
+  background:linear-gradient(135deg,var(--brand) 0%,#0d8ad6 60%,var(--accent) 130%);
+  box-shadow:var(--shh);position:relative}
+.logo .mark::after{content:"¥";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-weight:800;font-size:19px}
+.logo h1{font-size:17px;margin:0;font-weight:800}.logo .sub{font-size:11.5px;color:var(--muted);font-weight:600}
+.top-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+button{font-family:inherit;cursor:pointer;border:none;border-radius:9px;font-weight:700;transition:.16s ease}
+.btn{padding:9px 14px;font-size:13px;background:#fff;color:var(--ink2);border:1px solid var(--line);box-shadow:var(--sh)}
+.btn:hover{border-color:var(--brand);color:var(--brand);transform:translateY(-1px)}
+.btn.primary{background:linear-gradient(135deg,var(--brand),#0d8ad6);color:#fff;border-color:transparent;box-shadow:var(--shh)}
+.btn.primary:hover{filter:brightness(1.05);color:#fff}
+.btn.ghost{background:transparent;box-shadow:none}.btn.sm{padding:6px 10px;font-size:12px;border-radius:8px}
+.btn.danger{color:var(--warn);border-color:#f1cdb8}.btn.danger:hover{background:var(--warn-soft);border-color:var(--warn)}
+.btn.success{background:linear-gradient(135deg,#0b6b3a,#10a35a);color:#fff;border-color:transparent;box-shadow:0 4px 16px rgba(11,107,58,.28)}
+.btn.gold{background:linear-gradient(135deg,var(--gold),#d4a017);color:#fff;border-color:transparent}
+.tabs{display:flex;gap:6px;margin:22px 0 18px;background:#fff;padding:5px;border-radius:12px;
+  border:1px solid var(--line);box-shadow:var(--sh);width:max-content;max-width:100%;flex-wrap:wrap}
+.tab{padding:9px 18px;border-radius:9px;font-size:13.5px;font-weight:800;color:var(--muted);background:transparent;border:none}
+.tab.active{background:linear-gradient(135deg,var(--brand),#0d8ad6);color:#fff;box-shadow:var(--shh)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--sh)}
+.panel.pad{padding:18px}
+.panel-head{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid var(--line2);flex-wrap:wrap}
+.panel-head h2{margin:0;font-size:15px;font-weight:800}
+.panel-head .hint{font-size:12px;color:var(--muted);font-weight:600}
+.grow{flex:1}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.2px}
+select,input[type=text],input[type=number],input[type=date],textarea{font-family:inherit;font-size:13.5px;color:var(--ink);
+  background:#fff;border:1px solid var(--line);border-radius:9px;padding:9px 11px;outline:none;transition:.15s}
+select:focus,input:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+select{cursor:pointer}input[type=number]{width:118px}input[readonly]{background:var(--line2);color:var(--ink2)}
+textarea{resize:vertical;min-height:38px}
+.calc-grid{display:grid;grid-template-columns:1fr 340px;gap:18px;align-items:start}
+@media(max-width:900px){.calc-grid{grid-template-columns:1fr}}
+.plan-panel{border-left:4px solid var(--brand);margin-bottom:16px}
+.plan-grid{display:flex;gap:16px;flex-wrap:wrap;padding:16px 18px;align-items:flex-end}
+.plan-grid .field{min-width:140px;flex:1}.plan-grid .field input{width:100%}
+.plan-grid .arrow{font-size:20px;color:var(--muted);padding-bottom:8px;flex:0 0 auto}
+.plan-hint{font-size:11.5px;color:var(--muted);padding:0 18px 12px;line-height:1.6}
+.cust-grid{display:flex;gap:14px;flex-wrap:wrap;padding:14px 18px}
+.cust-grid .field{min-width:140px;flex:1}.cust-grid .field input,.cust-grid .field textarea{width:100%}
+.addbar{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.addbar select{min-width:200px;flex:1}
+.tpl-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+.tpl-bar select{min-width:180px}
+.lines{margin-top:14px;display:flex;flex-direction:column;gap:12px}
+.empty{padding:46px 20px;text-align:center;color:var(--muted)}
+.empty .big{font-size:30px;opacity:.4;margin-bottom:6px}
+.line{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#fff,#fcfdff);box-shadow:var(--sh);overflow:hidden}
+.line.fee{border-left:4px solid var(--accent)}.line.main{border-left:4px solid var(--brand)}.line.nonmain{border-left:4px solid var(--gold)}
+.line-top{display:flex;align-items:flex-start;gap:12px;padding:13px 15px}
+.line-name{font-weight:800;font-size:14px}
+.line-cat{font-size:11px;font-weight:700;color:var(--muted);margin-top:2px}
+.pill{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:20px;margin-left:7px;vertical-align:middle}
+.pill.main{background:var(--brand-soft);color:var(--brand-dk)}.pill.nonmain{background:var(--gold-soft);color:var(--gold)}.pill.fee{background:var(--accent-soft);color:#0a6e64}
+.line-body{padding:0 15px 14px;display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}
+.line-total{margin-left:auto;text-align:right;white-space:nowrap}
+.line-total .v{font-family:var(--mono);font-size:20px;font-weight:800;color:var(--money)}
+.line-total .l{font-size:10.5px;color:var(--muted);font-weight:700}
+.addons{display:flex;flex-wrap:wrap;gap:8px;width:100%;padding-top:2px}
+.chk{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--ink2);
+  background:#fff;border:1px solid var(--line);border-radius:20px;padding:6px 11px;cursor:pointer;transition:.14s;user-select:none}
+.chk input{accent-color:var(--brand);width:14px;height:14px;margin:0;cursor:pointer}
+.chk:hover{border-color:var(--brand)}
+.chk.on{background:var(--brand-soft);border-color:var(--brand);color:var(--brand-dk)}
+.chk .r{font-family:var(--mono);font-size:11px;color:var(--brand);font-weight:800}
+.formula{width:100%;font-size:11.5px;color:var(--muted);font-family:var(--mono);background:var(--line2);
+  border-radius:8px;padding:7px 10px;margin-top:2px;word-break:break-all}
+.inherited{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;color:var(--brand);font-weight:700;
+  background:var(--brand-soft);padding:3px 10px;border-radius:8px;margin-right:8px}
+.inherited.diff{color:var(--gold);background:var(--gold-soft)}
+.summary{position:sticky;top:84px}
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.sum-row:last-of-type{border-bottom:none}
+.sum-row .k{color:var(--ink2);font-weight:600}.sum-row .v{font-family:var(--mono);font-weight:800}
+.grand{margin-top:8px;padding:16px;border-radius:12px;background:linear-gradient(135deg,#06351f,#0b6b3a);color:#fff;text-align:center;box-shadow:0 8px 24px rgba(11,107,58,.28)}
+.grand .l{font-size:12px;opacity:.85;font-weight:700;letter-spacing:1px}
+.grand .v{font-family:var(--mono);font-size:34px;font-weight:800;margin-top:3px}
+.grand .v small{font-size:16px;opacity:.8}
+/* History */
+.search-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:flex-end}
+.search-bar .field{min-width:140px}.search-bar .field input{width:100%}
+.hist-list{display:flex;flex-direction:column;gap:10px}
+.hist-card{border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:var(--sh);overflow:hidden;cursor:pointer;transition:.16s}
+.hist-card:hover{border-color:var(--brand);box-shadow:var(--shh);transform:translateY(-1px)}
+.hist-card-top{display:flex;align-items:center;gap:14px;padding:14px 16px;flex-wrap:wrap}
+.hist-date{font-family:var(--mono);font-size:13px;color:var(--muted);font-weight:700;min-width:90px}
+.hist-phone{font-weight:800;font-size:14px;min-width:110px}
+.hist-name{color:var(--ink2);font-size:13px}
+.hist-biz{font-size:11.5px;color:var(--muted);flex:1;min-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hist-total{font-family:var(--mono);font-size:18px;font-weight:800;color:var(--money);margin-left:auto;white-space:nowrap}
+.hist-actions{display:flex;gap:6px;margin-left:8px}
+.hist-detail{display:none;border-top:1px solid var(--line2);padding:16px;background:#fafcff}
+.hist-detail.show{display:block}
+.hist-detail-line{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border-radius:8px;font-size:13px;margin-bottom:4px}
+.hist-detail-line:nth-child(odd){background:var(--line2)}
+.hist-detail-line .dn{font-weight:700}.hist-detail-line .dv{font-family:var(--mono);font-weight:800;color:var(--money)}
+.hist-detail-formula{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:2px}
+/* Dashboard */
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:20px}
+.dash-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:var(--sh);text-align:center}
+.dash-card .dl{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:6px}
+.dash-card .dv{font-family:var(--mono);font-size:26px;font-weight:800}
+.dash-card .dv.green{color:var(--money)}.dash-card .dv.blue{color:var(--brand)}.dash-card .dv.gold{color:var(--gold)}.dash-card .dv.teal{color:var(--accent)}
+.bar-wrap{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.bar-row{display:flex;align-items:center;gap:12px}
+.bar-label{width:110px;text-align:right;font-size:12.5px;font-weight:700;color:var(--ink2);flex:0 0 auto}
+.bar-track{flex:1;height:28px;background:var(--line2);border-radius:8px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:.4s;display:flex;align-items:center;padding-left:10px;
+  font-size:11.5px;font-weight:800;color:#fff;font-family:var(--mono);min-width:fit-content}
+.bar-fill.blue{background:linear-gradient(90deg,var(--brand),#3b9ae8)}.bar-fill.gold{background:linear-gradient(90deg,var(--gold),#d4a017)}.bar-fill.teal{background:linear-gradient(90deg,var(--accent),#2bc4b4)}
+.bar-val{width:90px;text-align:right;font-family:var(--mono);font-weight:800;font-size:13px;flex:0 0 auto}
+/* Rules */
+.rule-group{margin-bottom:22px}
+.rg-head{display:flex;align-items:center;gap:9px;margin:0 0 10px}
+.rg-head .dot{width:10px;height:10px;border-radius:3px}.rg-head h3{margin:0;font-size:14px;font-weight:800}.rg-head .n{font-size:11.5px;color:var(--muted);font-weight:700}
+table.rules{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--sh)}
+table.rules th{font-size:11.5px;letter-spacing:.5px;color:var(--muted);text-align:left;padding:11px 13px;background:#f7fafd;border-bottom:1px solid var(--line);font-weight:800}
+table.rules td{padding:11px 13px;border-bottom:1px solid var(--line2);font-size:13px;vertical-align:top}
+table.rules tr:last-child td{border-bottom:none}table.rules tr:hover td{background:#fbfdff}
+.r-name{font-weight:800}.r-meta{font-size:11px;color:var(--muted);margin-top:3px;font-family:var(--mono)}
+.tag{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 7px;border-radius:6px;background:var(--brand-soft);color:var(--brand-dk);margin:2px 3px 0 0}
+.tag.add{background:var(--accent-soft);color:#0a6e64}
+.calc-badge{font-family:var(--mono);font-weight:800;font-size:12.5px}.calc-badge.pct{color:var(--brand)}.calc-badge.fix{color:var(--accent)}
+.row-actions{display:flex;gap:6px;justify-content:flex-end;white-space:nowrap}
+/* Modal */
+.ov{position:fixed;inset:0;background:rgba(15,34,51,.45);backdrop-filter:blur(3px);z-index:60;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+.ov.show{display:flex}
+.modal{background:#fff;border-radius:16px;box-shadow:0 24px 70px rgba(15,34,51,.3);width:600px;max-width:100%;overflow:hidden;animation:pop .2s ease}
+@keyframes pop{from{transform:translateY(12px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+.modal-head{padding:17px 20px;border-bottom:1px solid var(--line2);display:flex;align-items:center}
+.modal-head h3{margin:0;font-size:16px;font-weight:800}
+.modal-body{padding:20px;max-height:62vh;overflow:auto}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--line2);display:flex;gap:10px;justify-content:flex-end;background:#fafcff}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mgrid .full{grid-column:1/-1}
+.mfield{display:flex;flex-direction:column;gap:6px}
+.mfield label{font-size:12px;font-weight:700;color:var(--ink2)}
+.mfield input,.mfield select{width:100%}
+.addon-edit{border:1px solid var(--line);border-radius:10px;padding:11px;margin-top:8px;background:#fbfdff}
+.addon-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.addon-row input.an{flex:1}.addon-row input.ar{width:88px}
+.x{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--warn);font-weight:800;display:grid;place-items:center;flex:0 0 auto}
+.x:hover{background:var(--warn-soft);border-color:var(--warn)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;
+  padding:11px 20px;border-radius:30px;font-size:13px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;
+  transition:.25s;z-index:90;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.footnote{margin-top:26px;font-size:11.5px;color:var(--muted);text-align:center;line-height:1.7}
+.hide{display:none!important}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+/* Print receipt */
+@media print{body{background:#fff!important}header.top,.tabs,.footnote,.no-print{display:none!important}
+  .receipt-print{display:block!important;max-width:600px;margin:0 auto;font-size:12px}
+}
+.receipt-print{display:none}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="logo"><div class="mark"></div><div><h1>河北移动 · 社会渠道酬金计算器</h1><div class="sub">含铁通 · 酬金框架 + 手续费框架</div></div></div>
+    <div class="top-actions">
+      <button class="btn sm" onclick="exportRulesJSON()">导出规则</button>
+      <button class="btn sm" onclick="document.getElementById('importer').click()">导入规则</button>
+      <input type="file" id="importer" accept="application/json" class="hide" onchange="importRules(event)">
+      <button class="btn sm ghost" onclick="resetRules()">恢复默认</button>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab active" data-tab="calc" onclick="switchTab('calc')">💰 酬金计算</button>
+    <button class="tab" data-tab="history" onclick="switchTab('history')">📋 历史记录</button>
+    <button class="tab" data-tab="dash" onclick="switchTab('dash')">📊 月度汇总</button>
+    <button class="tab" data-tab="rules" onclick="switchTab('rules')">⚙️ 规则库</button>
+  </div>
+
+  <!-- ===== CALC ===== -->
+  <div id="view-calc">
+    <div class="panel plan-panel">
+      <div class="panel-head"><h2>📋 客户套餐信息</h2><span class="hint">填写一次，所有业务自动继承</span></div>
+      <div class="cust-grid">
+        <div class="field" style="min-width:110px;max-width:170px"><label>客户手机号</label><input type="text" id="gPhone" placeholder="13800000000" maxlength="11"></div>
+        <div class="field" style="min-width:80px;max-width:130px"><label>客户姓名</label><input type="text" id="gName" placeholder="选填"></div>
+        <div class="field" style="min-width:120px;max-width:150px"><label>日期</label><input type="date" id="gDate"></div>
+        <div class="field" style="flex:2;min-width:160px"><label>备注</label><textarea id="gNote" rows="1" placeholder="选填，如：营业厅来访 / 外呼促销等"></textarea></div>
+      </div>
+      <div class="plan-grid">
+        <div class="field"><label>当前/新套餐贡献（元）</label><input type="number" id="gPlan" step="0.01" placeholder="如 59 / 99" oninput="onPlanChange()"></div>
+        <div class="arrow">→</div>
+        <div class="field"><label>原套餐（升档时填）</label><input type="number" id="gOldPlan" step="0.01" placeholder="升档前值" oninput="onPlanChange()"></div>
+        <div class="arrow">=</div>
+        <div class="field"><label>差价（自动）</label><input type="number" id="gDiff" readonly></div>
+      </div>
+      <div class="plan-hint">💡 <b>新入网</b>只填套餐贡献；<b>升档</b>两侧都填；<b>存量加装</b>只填当前值。</div>
+    </div>
+    <div class="calc-grid">
+      <div>
+        <div class="panel pad">
+          <div class="addbar">
+            <div class="field grow"><label>选择业务</label><select id="ruleSelect"></select></div>
+            <button class="btn primary" onclick="addLine()">+ 添加业务</button>
+          </div>
+          <div class="tpl-bar">
+            <div class="field"><label>快捷模板</label>
+              <select id="tplSelect"><option value="">— 选择模板 —</option></select>
+            </div>
+            <button class="btn sm gold" onclick="loadTemplate()">载入模板</button>
+            <button class="btn sm" onclick="saveTemplate()">💾 存为模板</button>
+            <button class="btn sm danger" onclick="deleteTemplate()">删除</button>
+          </div>
+        </div>
+        <div class="panel empty" id="emptyHint"><div class="big">🧾</div><div style="font-weight:700;color:var(--ink2)">还没有添加业务</div><div style="font-size:12.5px;margin-top:4px">选择业务 → 添加 → 填写参数 → 自动计算酬金</div></div>
+        <div class="lines" id="lines"></div>
+      </div>
+      <div class="summary">
+        <div class="panel">
+          <div class="panel-head"><h2>酬金汇总</h2></div>
+          <div style="padding:14px 18px">
+            <div class="sum-row"><span class="k">主套餐业务</span><span class="v" id="sumMain">¥0.00</span></div>
+            <div class="sum-row"><span class="k">非主套餐业务</span><span class="v" id="sumNon">¥0.00</span></div>
+            <div class="sum-row"><span class="k">手续费</span><span class="v" id="sumFee">¥0.00</span></div>
+            <div class="sum-row"><span class="k">业务笔数</span><span class="v" id="sumCount">0</span></div>
+            <div class="grand"><div class="l">应得酬金合计</div><div class="v"><small>¥</small><span id="grand">0.00</span></div></div>
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <button class="btn success" style="flex:1" onclick="saveToHistory()">💾 保存到历史</button>
+              <button class="btn sm" onclick="printReceipt()">🖨 单据</button>
+            </div>
+            <button class="btn ghost" style="width:100%;margin-top:6px" onclick="clearCalc()">清空全部</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HISTORY ===== -->
+  <div id="view-history" class="hide">
+    <div class="search-bar">
+      <div class="field"><label>手机号搜索</label><input type="text" id="hSearch" placeholder="输入手机号" oninput="renderHistory()"></div>
+      <div class="field"><label>开始日期</label><input type="date" id="hFrom" onchange="renderHistory()"></div>
+      <div class="field"><label>结束日期</label><input type="date" id="hTo" onchange="renderHistory()"></div>
+      <button class="btn sm" onclick="document.getElementById('hSearch').value='';document.getElementById('hFrom').value='';document.getElementById('hTo').value='';renderHistory()">重置</button>
+      <div class="grow"></div>
+      <button class="btn sm" onclick="exportHistoryCSV()">📥 导出Excel(CSV)</button>
+    </div>
+    <div class="hist-list" id="histList"></div>
+    <div class="panel empty" id="histEmpty" style="margin-top:10px"><div class="big">📋</div><div style="font-weight:700;color:var(--ink2)">暂无历史记录</div></div>
+  </div>
+
+  <!-- ===== DASHBOARD ===== -->
+  <div id="view-dash" class="hide">
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:18px;flex-wrap:wrap">
+      <div class="field"><label>选择月份</label><input type="month" id="dashMonth" onchange="renderDash()"></div>
+    </div>
+    <div id="dashContent"></div>
+  </div>
+
+  <!-- ===== RULES ===== -->
+  <div id="view-rules" class="hide">
+    <div class="panel-head" style="border:none;padding:0 2px 12px">
+      <h2 style="font-size:15px">规则库</h2><span class="hint" id="ruleCount"></span><div class="grow"></div>
+      <button class="btn primary sm" onclick="openRuleEditor()">+ 新增规则</button>
+    </div>
+    <div id="rulesContainer"></div>
+  </div>
+
+  <div class="footnote">数据保存在本机浏览器。建议定期导出备份。规则口径以河北移动正式文件为准。</div>
+</div>
+
+<!-- Rule editor modal -->
+<div class="ov" id="ruleModal"><div class="modal">
+  <div class="modal-head"><h3 id="modalTitle">新增规则</h3></div>
+  <div class="modal-body">
+    <div class="mgrid">
+      <div class="mfield"><label>所属框架</label><select id="f_group"><option value="主套餐">主套餐相关业务</option><option value="非主套餐">非主套餐相关业务</option><option value="手续费">手续费</option></select></div>
+      <div class="mfield"><label>分类</label><input type="text" id="f_category" placeholder="新入网 / 终端"></div>
+      <div class="mfield full"><label>业务名称</label><input type="text" id="f_name"></div>
+      <div class="mfield"><label>计算方式</label><select id="f_calc" onchange="onCalcChange()"><option value="percent">比例×基数</option><option value="fixed">固定金额×数量</option></select></div>
+      <div class="mfield" id="wrap_baseLabel"><label>基数含义</label><select id="f_baseLabel" onchange="onBaseLabelChange()">
+        <option value="套餐贡献">套餐贡献（继承全局）</option><option value="套餐贡献差价">套餐贡献差价（继承全局）</option>
+        <option value="月贡献价值">月贡献价值</option><option value="趸交费用">趸交费用</option>
+        <option value="预存费用">预存费用</option><option value="充值金额">充值金额</option><option value="自定义">自定义</option>
+      </select></div>
+      <div class="mfield" id="wrap_customLabel" style="display:none"><label>自定义基数名</label><input type="text" id="f_customLabel"></div>
+      <div class="mfield" id="wrap_baseRate"><label id="lbl_baseRate">基础比例（%）</label><input type="number" id="f_baseRate" step="0.01"></div>
+      <div class="mfield" id="wrap_unit"><label>单位</label><input type="text" id="f_unit" placeholder="笔"></div>
+      <div class="mfield full"><label>备注</label><input type="text" id="f_note"></div>
+    </div>
+    <div id="wrap_addons"><div class="addon-edit">
+      <div style="display:flex;align-items:center;margin-bottom:8px"><strong style="font-size:13px">叠加项</strong><div class="grow"></div><button class="btn sm" type="button" onclick="addAddonRow()">+ 叠加项</button></div>
+      <div id="addonRows"></div>
+    </div></div>
+  </div>
+  <div class="modal-foot"><button class="btn ghost" onclick="closeModal('ruleModal')">取消</button><button class="btn primary" onclick="saveRule()">保存</button></div>
+</div></div>
+
+<!-- Receipt modal -->
+<div class="ov" id="receiptModal"><div class="modal" style="width:520px">
+  <div class="modal-head"><h3>酬金单据</h3><div class="grow"></div><button class="btn sm" onclick="doPrint()">🖨 打印</button></div>
+  <div class="modal-body" id="receiptBody"></div>
+  <div class="modal-foot"><button class="btn ghost" onclick="closeModal('receiptModal')">关闭</button></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== DEFAULT RULES ===== */
+function defaultRules(){
+  const A=(l,r)=>({id:'a'+rnd(),label:l,rate:r});
+  return [
+    {id:'r_new1',group:'主套餐',category:'新入网',name:'新入网-59元以下',calc:'percent',baseLabel:'套餐贡献',baseRate:100,unit:'笔',addons:[A('细分/竞对/收费副卡',300),A('新身份证',200),A('关怀',400),A('其他(卡槽运营·重点客群)',50)],note:''},
+    {id:'r_new2',group:'主套餐',category:'新入网',name:'新入网-【59-99元）',calc:'percent',baseLabel:'套餐贡献',baseRate:200,unit:'笔',addons:[A('新身份证',200),A('关怀',400),A('其他(卡槽运营·重点客群)',50)],note:''},
+    {id:'r_new3',group:'主套餐',category:'新入网',name:'新入网-99元及以上',calc:'percent',baseLabel:'套餐贡献',baseRate:400,unit:'笔',addons:[A('冀享',200),A('新身份证',200),A('关怀',400),A('其他(卡槽运营·重点客群)',50)],note:''},
+    {id:'r_up1',group:'主套餐',category:'普通升档',name:'普通升档-59元以下',calc:'percent',baseLabel:'套餐贡献差价',baseRate:300,unit:'笔',addons:[A('关怀',400),A('其他(卡槽运营·重点客群)',100)],note:''},
+    {id:'r_up2',group:'主套餐',category:'普通升档',name:'普通升档-【59，99）',calc:'percent',baseLabel:'套餐贡献差价',baseRate:400,unit:'笔',addons:[A('关怀',400),A('其他(卡槽运营·重点客群)',100)],note:''},
+    {id:'r_up3',group:'主套餐',category:'普通升档',name:'普通升档-99元及以上',calc:'percent',baseLabel:'套餐贡献差价',baseRate:500,unit:'笔',addons:[A('冀享',200),A('关怀',400),A('其他(卡槽运营·重点客群)',100)],note:''},
+    {id:'r_jia',group:'主套餐',category:'全家福',name:'全家福升档',calc:'percent',baseLabel:'套餐贡献差价',baseRate:600,unit:'笔',addons:[],note:'600/700%改基础比例；月分成填手动附加'},
+    {id:'r_kd',group:'非主套餐',category:'宽带',name:'宽带',calc:'percent',baseLabel:'套餐贡献',baseRate:100,unit:'笔',addons:[A('同办硬件',100)],note:'继承全局套餐贡献'},
+    {id:'r_kdtv',group:'非主套餐',category:'融合',name:'宽带+电视',calc:'percent',baseLabel:'套餐贡献',baseRate:200,unit:'笔',addons:[A('同办硬件',100)],note:'继承全局'},
+    {id:'r_fq',group:'非主套餐',category:'分期金币',name:'分期、金币',calc:'percent',baseLabel:'套餐贡献',baseRate:200,unit:'笔',addons:[],note:'继承全局'},
+    {id:'r_pm',group:'非主套餐',category:'连续包月',name:'连续包月(流量/语音/权益/智能硬件服务包)',calc:'percent',baseLabel:'月贡献价值',baseRate:400,unit:'笔',addons:[],note:''},
+    {id:'r_dun',group:'非主套餐',category:'趸交',name:'趸交包',calc:'percent',baseLabel:'趸交费用',baseRate:50,unit:'笔',addons:[],note:''},
+    {id:'r_fttr',group:'非主套餐',category:'趸交',name:'FTTR、云电脑(新资费)',calc:'percent',baseLabel:'趸交费用',baseRate:40,unit:'笔',addons:[],note:''},
+    {id:'r_big',group:'非主套餐',category:'大颗粒',name:'大颗粒(及部分新业务)',calc:'percent',baseLabel:'月贡献价值',baseRate:500,unit:'笔',addons:[],note:''},
+    {id:'r_tvadd',group:'非主套餐',category:'融合',name:'电视+增值',calc:'percent',baseLabel:'月贡献价值',baseRate:200,unit:'笔',addons:[],note:''},
+    {id:'r_hf',group:'非主套餐',category:'话费合约',name:'话费合约',calc:'percent',baseLabel:'预存费用',baseRate:20,unit:'笔',addons:[A('优质客群(58元+非硬融/全球通非硬融/中高端/二三类修复)',20)],note:'优质40%，其他20%'},
+    {id:'r_f1',group:'手续费',category:'业务包类',name:'趸交+分月小硬件',calc:'fixed',baseRate:20,unit:'笔',addons:[],note:''},
+    {id:'r_f2',group:'手续费',category:'业务包类',name:'云电脑(老资费)',calc:'fixed',baseRate:50,unit:'笔',addons:[],note:''},
+    {id:'r_f3',group:'手续费',category:'拉新',name:'APP拉新',calc:'fixed',baseRate:10,unit:'笔',addons:[],note:''},
+    {id:'r_f4',group:'手续费',category:'拉新',name:'熟客拉新',calc:'fixed',baseRate:2,unit:'笔',addons:[],note:''},
+    {id:'r_f5',group:'手续费',category:'拉新',name:'电子学生证',calc:'fixed',baseRate:30,unit:'笔',addons:[],note:''},
+    {id:'r_f6',group:'手续费',category:'转化',name:'校园接盘',calc:'fixed',baseRate:30,unit:'笔',addons:[],note:''},
+    {id:'r_f7',group:'手续费',category:'转化',name:'平价接盘手续费',calc:'fixed',baseRate:30,unit:'笔',addons:[],note:''},
+    {id:'r_f8',group:'手续费',category:'基础及服务',name:'宽带挽留',calc:'fixed',baseRate:50,unit:'笔',addons:[],note:''},
+    {id:'r_f9',group:'手续费',category:'基础及服务',name:'宽带欠销',calc:'fixed',baseRate:30,unit:'笔',addons:[],note:''},
+    {id:'r_f10',group:'手续费',category:'基础及服务',name:'机顶盒回收',calc:'fixed',baseRate:50,unit:'台',addons:[],note:''},
+    {id:'r_f11',group:'手续费',category:'基础及服务',name:'充值缴费',calc:'percent',baseLabel:'充值金额',baseRate:0.30,unit:'笔',addons:[],note:'0.30%'},
+    {id:'r_f12',group:'手续费',category:'基础及服务',name:'蓄水',calc:'fixed',baseRate:20,unit:'笔',addons:[],note:''},
+    {id:'r_f13',group:'手续费',category:'融合',name:'爱家亲情圈',calc:'fixed',baseRate:1,unit:'户',addons:[],note:'1元/户'},
+    {id:'r_f14',group:'手续费',category:'融合',name:'客户代付',calc:'fixed',baseRate:25,unit:'笔',addons:[],note:''},
+    {id:'r_f15',group:'手续费',category:'融合',name:'加号提速',calc:'fixed',baseRate:40,unit:'笔',addons:[],note:''},
+    {id:'r_f16',group:'手续费',category:'融合',name:'亲情网成员添加',calc:'fixed',baseRate:15,unit:'个',addons:[],note:''},
+    {id:'r_f17',group:'手续费',category:'融合',name:'二宽+电视',calc:'fixed',baseRate:30,unit:'笔',addons:[],note:''},
+    {id:'r_f18',group:'手续费',category:'融合',name:'多人融宽、二宽',calc:'fixed',baseRate:50,unit:'笔',addons:[],note:''},
+    {id:'r_f19',group:'手续费',category:'融合',name:'全球通客户非融合客户融合',calc:'fixed',baseRate:30,unit:'笔',addons:[],note:''},
+    {id:'r_f20',group:'手续费',category:'终端',name:'价值提升(拉新/2G3G4G升5G/信用购/异网主卡/5GA)',calc:'fixed',baseRate:180,unit:'台',addons:[],note:''},
+    {id:'r_f21',group:'手续费',category:'终端',name:'泛终端',calc:'fixed',baseRate:50,unit:'台',addons:[],note:''},
+    {id:'r_f22',group:'手续费',category:'终端',name:'以旧换新',calc:'fixed',baseRate:30,unit:'台',addons:[],note:''},
+    {id:'r_f23',group:'手续费',category:'终端',name:'泛全联盟合作',calc:'fixed',baseRate:25,unit:'笔',addons:[],note:''},
+    {id:'r_f24',group:'手续费',category:'终端',name:'领航',calc:'fixed',baseRate:90,unit:'笔',addons:[],note:''},
+    {id:'r_f25',group:'手续费',category:'终端',name:'战略型终端激励',calc:'fixed',baseRate:20,unit:'台',addons:[],note:''},
+  ];
+}
+
+/* ===== STORAGE ===== */
+const LS_RULES='hbyd_rules_v3',LS_HIST='hbyd_hist_v1',LS_TPL='hbyd_tpl_v1';
+let storeOk=true;try{localStorage.setItem('__t','1');localStorage.removeItem('__t');}catch(e){storeOk=false;}
+function lsGet(k,d){if(!storeOk)return d;try{const s=localStorage.getItem(k);return s?JSON.parse(s):d;}catch(e){return d;}}
+function lsSet(k,v){if(storeOk)try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+let RULES=lsGet(LS_RULES,null)||defaultRules();
+let HISTORY=lsGet(LS_HIST,[]);
+let TEMPLATES=lsGet(LS_TPL,[]);
+let LINES=[];
+let editingId=null;
+
+/* ===== HELPERS ===== */
+const $=id=>document.getElementById(id);
+function rnd(){return Math.random().toString(36).slice(2,8);}
+const GM={'主套餐':{c:'var(--brand)',pill:'main',label:'主套餐相关业务'},'非主套餐':{c:'var(--gold)',pill:'nonmain',label:'非主套餐相关业务'},'手续费':{c:'var(--accent)',pill:'fee',label:'手续费'}};
+const GLABELS=['套餐贡献','套餐贡献差价'];
+function isGlobal(r){return r.calc==='percent'&&GLABELS.includes(r.baseLabel);}
+function fmt(n){return n.toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1800);}
+function ruleById(id){return RULES.find(r=>r.id===id);}
+function getGV(label){
+  if(label==='套餐贡献')return parseFloat($('gPlan').value)||0;
+  if(label==='套餐贡献差价')return parseFloat($('gDiff').value)||0;
+  return 0;
+}
+function closeModal(id){$(id).classList.remove('show');}
+function today(){return new Date().toISOString().slice(0,10);}
+
+/* ===== TABS ===== */
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
+  ['calc','history','dash','rules'].forEach(v=>$('view-'+v).classList.toggle('hide',v!==t));
+  if(t==='history')renderHistory();
+  if(t==='dash')renderDash();
+  if(t==='rules')renderRulesLib();
+}
+
+/* ===== PLAN CHANGE ===== */
+function onPlanChange(){
+  const p=parseFloat($('gPlan').value)||0,o=parseFloat($('gOldPlan').value)||0;
+  $('gDiff').value=o>0?Math.max(0,p-o).toFixed(2):'';
+  renderLines();
+}
+
+/* ===== SELECT ===== */
+function buildSelect(){
+  const sel=$('ruleSelect');const prev=sel.value;sel.innerHTML='';
+  ['主套餐','非主套餐','手续费'].forEach(g=>{
+    const og=document.createElement('optgroup');og.label=GM[g].label;
+    RULES.filter(r=>r.group===g).forEach(r=>{
+      const o=document.createElement('option');o.value=r.id;o.textContent=r.name+(isGlobal(r)?'（继承套餐）':'');og.appendChild(o);
+    });if(og.children.length)sel.appendChild(og);
+  });if(prev&&ruleById(prev))sel.value=prev;
+}
+function buildTplSelect(){
+  const s=$('tplSelect');s.innerHTML='<option value="">— 选择模板 —</option>';
+  TEMPLATES.forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent=t.name;s.appendChild(o);});
+}
+
+/* ===== CALC LINES ===== */
+function addLine(){
+  const id=$('ruleSelect').value;if(!id)return;
+  LINES.push({lid:'L'+rnd(),ruleId:id,base:'',count:1,addons:{},manual:''});
+  renderLines();
+}
+function removeLine(lid){LINES=LINES.filter(l=>l.lid!==lid);renderLines();}
+function clearCalc(){if(LINES.length&&!confirm('确定清空？'))return;LINES=[];renderLines();}
+function getBase(l,r){if(r.calc==='fixed')return r.baseRate;if(isGlobal(r))return getGV(r.baseLabel);return parseFloat(l.base)||0;}
+function lineAmt(l){
+  const r=ruleById(l.ruleId);if(!r)return 0;
+  const cnt=Math.max(0,parseFloat(l.count)||0),manual=parseFloat(l.manual)||0;
+  if(r.calc==='fixed')return r.baseRate*cnt+manual;
+  const base=getBase(l,r);let pct=r.baseRate;
+  (r.addons||[]).forEach(a=>{if(l.addons[a.id])pct+=a.rate;});
+  return pct/100*base*cnt+manual;
+}
+function buildFormula(l,r,amt){
+  if(r.calc==='fixed'){const m=parseFloat(l.manual)||0;return `${fmt(r.baseRate)}×${l.count||0}${r.unit||''}${m?' +'+fmt(m):''} = ¥${fmt(amt)}`;}
+  const base=getBase(l,r);let pct=r.baseRate,parts=[r.baseRate+'%'];
+  (r.addons||[]).forEach(a=>{if(l.addons[a.id]){pct+=a.rate;parts.push('+'+a.rate+'%');}});
+  const m=parseFloat(l.manual)||0;const tag=isGlobal(r)?r.baseLabel:'基数';
+  return `(${parts.join(' ')}=${pct}%)×${tag}${fmt(base)}×${l.count||0}${m?' +'+fmt(m):''} = ¥${fmt(amt)}`;
+}
+function renderLines(){
+  const box=$('lines'),hint=$('emptyHint');box.innerHTML='';
+  if(!LINES.length){hint.classList.remove('hide');updateSum();return;}
+  hint.classList.add('hide');
+  LINES.forEach(l=>{
+    const r=ruleById(l.ruleId);if(!r)return;
+    const gm=GM[r.group],amt=lineAmt(l),card=document.createElement('div');
+    card.className='line '+(r.group==='手续费'?'fee':r.group==='主套餐'?'main':'nonmain');
+    let inp='';
+    if(r.calc==='percent'){
+      if(isGlobal(r)){const gv=getGV(r.baseLabel);inp+=`<div class="inherited${r.baseLabel==='套餐贡献差价'?' diff':''}">📌 ${r.baseLabel}：¥${fmt(gv)}</div>`;}
+      else{inp+=`<div class="field"><label>${r.baseLabel||'基数'}（元）</label><input type="number" step="0.01" value="${l.base}" placeholder="0" data-lid="${l.lid}" data-key="base" oninput="updF(this)"></div>`;}
+    }
+    inp+=`<div class="field"><label>数量（${r.unit||'笔'}）</label><input type="number" step="1" min="0" value="${l.count}" data-lid="${l.lid}" data-key="count" oninput="updF(this)"></div>`;
+    inp+=`<div class="field"><label>手动附加（元）</label><input type="number" step="0.01" value="${l.manual}" placeholder="0" data-lid="${l.lid}" data-key="manual" oninput="updF(this)"></div>`;
+    let adh='';
+    if(r.calc==='percent'&&r.addons&&r.addons.length){
+      adh='<div class="addons">'+r.addons.map(a=>{const on=!!l.addons[a.id];
+        return `<label class="chk ${on?'on':''}"><input type="checkbox" ${on?'checked':''} data-lid="${l.lid}" data-aid="${a.id}" onchange="updA(this)"> ${a.label} <span class="r">+${a.rate}%</span></label>`;}).join('')+'</div>';
+    }
+    card.innerHTML=`<div class="line-top"><div><span class="line-name">${r.name}</span><span class="pill ${gm.pill}">${gm.label}</span><div class="line-cat">${r.category||''}${r.note?' · '+r.note:''}</div></div><div class="line-total"><div class="v">¥${fmt(amt)}</div><div class="l">本项酬金</div></div></div>
+      <div class="line-body">${inp}<button class="btn sm danger" style="margin-left:auto" onclick="removeLine('${l.lid}')">删除</button>${adh}<div class="formula">${buildFormula(l,r,amt)}</div></div>`;
+    box.appendChild(card);
+  });updateSum();
+}
+function updF(el){const l=LINES.find(x=>x.lid===el.dataset.lid);if(!l)return;l[el.dataset.key]=el.value;
+  const card=el.closest('.line'),r=ruleById(l.ruleId),amt=lineAmt(l);
+  card.querySelector('.line-total .v').textContent='¥'+fmt(amt);card.querySelector('.formula').textContent=buildFormula(l,r,amt);updateSum();}
+function updA(el){const l=LINES.find(x=>x.lid===el.dataset.lid);if(!l)return;l.addons[el.dataset.aid]=el.checked;renderLines();}
+function updateSum(){
+  let m=0,n=0,f=0;
+  LINES.forEach(l=>{const r=ruleById(l.ruleId);if(!r)return;const a=lineAmt(l);
+    if(r.group==='主套餐')m+=a;else if(r.group==='非主套餐')n+=a;else f+=a;});
+  $('sumMain').textContent='¥'+fmt(m);$('sumNon').textContent='¥'+fmt(n);$('sumFee').textContent='¥'+fmt(f);
+  $('sumCount').textContent=LINES.length;$('grand').textContent=fmt(m+n+f);
+}
+
+/* ===== TEMPLATES ===== */
+function saveTemplate(){
+  if(!LINES.length){toast('请先添加业务');return;}
+  const name=prompt('请输入模板名称：','');
+  if(!name||!name.trim())return;
+  const tpl={id:'T'+rnd(),name:name.trim(),
+    planValue:parseFloat($('gPlan').value)||0,oldPlanValue:parseFloat($('gOldPlan').value)||0,
+    lines:LINES.map(l=>({ruleId:l.ruleId,addons:{...l.addons}}))};
+  TEMPLATES.push(tpl);lsSet(LS_TPL,TEMPLATES);buildTplSelect();toast('模板已保存');
+}
+function loadTemplate(){
+  const id=$('tplSelect').value;if(!id){toast('请先选择模板');return;}
+  const tpl=TEMPLATES.find(t=>t.id===id);if(!tpl)return;
+  if(tpl.planValue)$('gPlan').value=tpl.planValue;
+  if(tpl.oldPlanValue)$('gOldPlan').value=tpl.oldPlanValue;
+  onPlanChange();
+  LINES=tpl.lines.map(tl=>({lid:'L'+rnd(),ruleId:tl.ruleId,base:'',count:1,addons:{...tl.addons},manual:''})).filter(l=>ruleById(l.ruleId));
+  renderLines();toast('模板已载入');
+}
+function deleteTemplate(){
+  const id=$('tplSelect').value;if(!id){toast('请先选择模板');return;}
+  const tpl=TEMPLATES.find(t=>t.id===id);if(!tpl||!confirm(`删除模板「${tpl.name}」？`))return;
+  TEMPLATES=TEMPLATES.filter(t=>t.id!==id);lsSet(LS_TPL,TEMPLATES);buildTplSelect();toast('已删除');
+}
+
+/* ===== SAVE TO HISTORY ===== */
+function saveToHistory(){
+  if(!LINES.length){toast('请先添加业务');return;}
+  const record={id:'H'+rnd(),timestamp:Date.now(),
+    date:$('gDate').value||today(),phone:$('gPhone').value.trim(),customerName:$('gName').value.trim(),note:$('gNote').value.trim(),
+    planValue:parseFloat($('gPlan').value)||0,oldPlanValue:parseFloat($('gOldPlan').value)||0,diffValue:parseFloat($('gDiff').value)||0,
+    lines:LINES.map(l=>{const r=ruleById(l.ruleId);if(!r)return null;const amt=lineAmt(l);
+      return{ruleId:l.ruleId,ruleName:r.name,ruleGroup:r.group,ruleCategory:r.category,calc:r.calc,
+        baseLabel:r.baseLabel,baseRate:r.baseRate,unit:r.unit,
+        base:isGlobal(r)?getGV(r.baseLabel):(parseFloat(l.base)||0),count:parseFloat(l.count)||0,
+        addons:(r.addons||[]).map(a=>({label:a.label,rate:a.rate,checked:!!l.addons[a.id]})),
+        manual:parseFloat(l.manual)||0,amount:amt};}).filter(Boolean),
+    totals:{main:0,nonMain:0,fee:0,grand:0}};
+  record.lines.forEach(l=>{if(l.ruleGroup==='主套餐')record.totals.main+=l.amount;else if(l.ruleGroup==='非主套餐')record.totals.nonMain+=l.amount;else record.totals.fee+=l.amount;});
+  record.totals.grand=record.totals.main+record.totals.nonMain+record.totals.fee;
+  HISTORY.unshift(record);lsSet(LS_HIST,HISTORY);toast('已保存到历史记录');
+}
+
+/* ===== HISTORY VIEW ===== */
+function getFilteredHistory(){
+  let h=[...HISTORY];
+  const q=($('hSearch').value||'').trim();if(q)h=h.filter(r=>r.phone.includes(q)||r.customerName.includes(q));
+  const f=$('hFrom').value;if(f)h=h.filter(r=>r.date>=f);
+  const t=$('hTo').value;if(t)h=h.filter(r=>r.date<=t);
+  return h;
+}
+function renderHistory(){
+  const h=getFilteredHistory(),box=$('histList'),empty=$('histEmpty');box.innerHTML='';
+  if(!h.length){empty.classList.remove('hide');return;}empty.classList.add('hide');
+  h.forEach(r=>{
+    const card=document.createElement('div');card.className='hist-card';
+    const biz=r.lines.map(l=>l.ruleName).join('、');
+    card.innerHTML=`<div class="hist-card-top" onclick="toggleDetail('${r.id}')">
+      <span class="hist-date">${r.date}</span><span class="hist-phone">${r.phone||'—'}</span><span class="hist-name">${r.customerName||''}</span>
+      <span class="hist-biz">${biz}</span><span class="hist-total">¥${fmt(r.totals.grand)}</span>
+      <div class="hist-actions" onclick="event.stopPropagation()">
+        <button class="btn sm" onclick="viewReceipt('${r.id}')">单据</button>
+        <button class="btn sm" onclick="reloadCalc('${r.id}')">复用</button>
+        <button class="btn sm danger" onclick="deleteHist('${r.id}')">删除</button>
+      </div></div>
+      <div class="hist-detail" id="hd_${r.id}">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">套餐贡献：¥${fmt(r.planValue)}${r.oldPlanValue?' | 原套餐：¥'+fmt(r.oldPlanValue)+' | 差价：¥'+fmt(r.diffValue):''}</div>
+        ${r.lines.map(l=>{
+          let f='';
+          if(l.calc==='fixed')f=`${fmt(l.baseRate)}×${l.count}${l.unit||''}${l.manual?' +'+fmt(l.manual):''}`;
+          else{let pct=l.baseRate;const ca=l.addons.filter(a=>a.checked);ca.forEach(a=>pct+=a.rate);
+            f=`${pct}%×${fmt(l.base)}×${l.count}${l.manual?' +'+fmt(l.manual):''}`;
+            if(ca.length)f+=`  [${ca.map(a=>a.label+'+'+a.rate+'%').join(', ')}]`;}
+          return `<div class="hist-detail-line"><div><span class="dn">${l.ruleName}</span><span class="pill ${GM[l.ruleGroup]?.pill||''}" style="font-size:9px">${l.ruleGroup}</span><div class="hist-detail-formula">${f}</div></div><span class="dv">¥${fmt(l.amount)}</span></div>`;
+        }).join('')}
+        <div style="margin-top:10px;display:flex;justify-content:space-between;font-weight:800;font-size:14px;padding:8px 10px;background:var(--brand-soft);border-radius:8px">
+          <span>合计</span><span style="color:var(--money);font-family:var(--mono)">¥${fmt(r.totals.grand)}</span></div>
+        ${r.note?'<div style="margin-top:6px;font-size:12px;color:var(--muted)">备注：'+r.note+'</div>':''}
+      </div>`;
+    box.appendChild(card);
+  });
+}
+function toggleDetail(id){const d=$('hd_'+id);if(d)d.classList.toggle('show');}
+function deleteHist(id){if(!confirm('确定删除此记录？'))return;HISTORY=HISTORY.filter(r=>r.id!==id);lsSet(LS_HIST,HISTORY);renderHistory();toast('已删除');}
+function reloadCalc(id){
+  const r=HISTORY.find(h=>h.id===id);if(!r)return;
+  $('gPhone').value=r.phone||'';$('gName').value=r.customerName||'';$('gDate').value=r.date;$('gNote').value=r.note||'';
+  $('gPlan').value=r.planValue||'';$('gOldPlan').value=r.oldPlanValue||'';onPlanChange();
+  LINES=r.lines.map(l=>({lid:'L'+rnd(),ruleId:l.ruleId,base:l.base||'',count:l.count,
+    addons:Object.fromEntries((l.addons||[]).filter(a=>a.checked).map(a=>{const rr=ruleById(l.ruleId);const ma=(rr?.addons||[]).find(ra=>ra.label===a.label);return ma?[ma.id,true]:null;}).filter(Boolean)),
+    manual:l.manual||''}));
+  renderLines();switchTab('calc');toast('已载入，可修改后重新计算');
+}
+
+/* ===== EXPORT HISTORY CSV ===== */
+function exportHistoryCSV(){
+  const h=getFilteredHistory();if(!h.length){toast('无记录可导出');return;}
+  const BOM='\uFEFF';
+  let csv=BOM+'日期,手机号,客户姓名,业务明细,主套餐酬金,非主套餐酬金,手续费,合计酬金,备注\n';
+  h.forEach(r=>{
+    const biz=r.lines.map(l=>l.ruleName).join('+');
+    const esc=s=>'"'+(s||'').replace(/"/g,'""')+'"';
+    csv+=[r.date,r.phone,r.customerName,esc(biz),r.totals.main.toFixed(2),r.totals.nonMain.toFixed(2),r.totals.fee.toFixed(2),r.totals.grand.toFixed(2),esc(r.note)].join(',')+'\n';
+  });
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='酬金历史记录_'+today()+'.csv';a.click();URL.revokeObjectURL(a.href);toast('已导出');
+}
+
+/* ===== RECEIPT ===== */
+function buildReceiptHTML(r){
+  let html=`<div style="font-family:var(--sans);font-size:13px;line-height:1.7">
+    <div style="text-align:center;border-bottom:2px solid #333;padding-bottom:10px;margin-bottom:12px">
+      <div style="font-size:16px;font-weight:800">河北移动 · 酬金计算单据</div>
+      <div style="font-size:11px;color:#888">社会渠道（含铁通）</div></div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px 20px;margin-bottom:12px;font-size:12px">
+      <div><b>日期：</b>${r.date}</div><div><b>手机号：</b>${r.phone||'—'}</div><div><b>客户：</b>${r.customerName||'—'}</div>
+      <div><b>套餐贡献：</b>¥${fmt(r.planValue)}</div>
+      ${r.oldPlanValue?'<div><b>原套餐：</b>¥'+fmt(r.oldPlanValue)+'</div><div><b>差价：</b>¥'+fmt(r.diffValue)+'</div>':''}
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px">
+      <tr style="background:#f0f0f0"><th style="text-align:left;padding:6px 8px;border:1px solid #ddd">业务</th><th style="text-align:left;padding:6px 8px;border:1px solid #ddd">计算明细</th><th style="text-align:right;padding:6px 8px;border:1px solid #ddd">酬金</th></tr>`;
+  r.lines.forEach(l=>{
+    let f='';
+    if(l.calc==='fixed')f=`${fmt(l.baseRate)}×${l.count}`;
+    else{let pct=l.baseRate;l.addons.filter(a=>a.checked).forEach(a=>pct+=a.rate);f=`${pct}%×${fmt(l.base)}×${l.count}`;}
+    if(l.manual)f+=' +'+fmt(l.manual);
+    html+=`<tr><td style="padding:5px 8px;border:1px solid #ddd">${l.ruleName}</td><td style="padding:5px 8px;border:1px solid #ddd;font-family:monospace;font-size:11px">${f}</td><td style="text-align:right;padding:5px 8px;border:1px solid #ddd;font-weight:700">¥${fmt(l.amount)}</td></tr>`;
+  });
+  html+=`</table>
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>主套餐业务</span><span>¥${fmt(r.totals.main)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>非主套餐业务</span><span>¥${fmt(r.totals.nonMain)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px"><span>手续费</span><span>¥${fmt(r.totals.fee)}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;padding:10px;background:#f0f8f0;border-radius:8px"><span>应得酬金合计</span><span style="color:#0b6b3a">¥${fmt(r.totals.grand)}</span></div>
+    ${r.note?'<div style="margin-top:8px;font-size:11px;color:#888">备注：'+r.note+'</div>':''}
+    <div style="margin-top:16px;text-align:center;font-size:10px;color:#bbb">以河北移动正式酬金文件为准 · 本单据仅作参考</div></div>`;
+  return html;
+}
+function printReceipt(){
+  if(!LINES.length){toast('请先添加业务');return;}
+  // Build a temp record from current state
+  const r=buildCurrentRecord();
+  $('receiptBody').innerHTML=buildReceiptHTML(r);
+  $('receiptModal').classList.add('show');
+}
+function viewReceipt(id){
+  const r=HISTORY.find(h=>h.id===id);if(!r)return;
+  $('receiptBody').innerHTML=buildReceiptHTML(r);
+  $('receiptModal').classList.add('show');
+}
+function doPrint(){
+  const content=$('receiptBody').innerHTML;
+  const w=window.open('','_blank','width=600,height=800');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>酬金单据</title>
+    <style>body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;padding:20px;-webkit-print-color-adjust:exact}
+    @media print{@page{margin:15mm}}</style></head><body>${content}
+    <script>window.onload=function(){window.print();}<\/script></body></html>`);
+  w.document.close();
+}
+function buildCurrentRecord(){
+  const r={date:$('gDate').value||today(),phone:$('gPhone').value.trim(),customerName:$('gName').value.trim(),note:$('gNote').value.trim(),
+    planValue:parseFloat($('gPlan').value)||0,oldPlanValue:parseFloat($('gOldPlan').value)||0,diffValue:parseFloat($('gDiff').value)||0,
+    lines:LINES.map(l=>{const ru=ruleById(l.ruleId);if(!ru)return null;const amt=lineAmt(l);
+      return{ruleId:l.ruleId,ruleName:ru.name,ruleGroup:ru.group,ruleCategory:ru.category,calc:ru.calc,
+        baseLabel:ru.baseLabel,baseRate:ru.baseRate,unit:ru.unit,
+        base:isGlobal(ru)?getGV(ru.baseLabel):(parseFloat(l.base)||0),count:parseFloat(l.count)||0,
+        addons:(ru.addons||[]).map(a=>({label:a.label,rate:a.rate,checked:!!l.addons[a.id]})),
+        manual:parseFloat(l.manual)||0,amount:amt};}).filter(Boolean),
+    totals:{main:0,nonMain:0,fee:0,grand:0}};
+  r.lines.forEach(l=>{if(l.ruleGroup==='主套餐')r.totals.main+=l.amount;else if(l.ruleGroup==='非主套餐')r.totals.nonMain+=l.amount;else r.totals.fee+=l.amount;});
+  r.totals.grand=r.totals.main+r.totals.nonMain+r.totals.fee;return r;
+}
+
+/* ===== DASHBOARD ===== */
+function renderDash(){
+  const month=$('dashMonth').value;const box=$('dashContent');
+  if(!month){box.innerHTML='<div class="panel pad" style="text-align:center;color:var(--muted)">请选择月份查看汇总</div>';return;}
+  const mh=HISTORY.filter(r=>r.date&&r.date.slice(0,7)===month);
+  if(!mh.length){box.innerHTML='<div class="panel pad" style="text-align:center;color:var(--muted)">该月暂无记录</div>';return;}
+  let tm=0,tn=0,tf=0,cnt=mh.length;
+  mh.forEach(r=>{tm+=r.totals.main;tn+=r.totals.nonMain;tf+=r.totals.fee;});
+  const total=tm+tn+tf;const mx=Math.max(tm,tn,tf,1);
+  // Biz type breakdown
+  const bizCount={};mh.forEach(r=>r.lines.forEach(l=>{bizCount[l.ruleName]=(bizCount[l.ruleName]||0)+l.amount;}));
+  const topBiz=Object.entries(bizCount).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  box.innerHTML=`
+    <div class="dash-grid">
+      <div class="dash-card"><div class="dl">本月总酬金</div><div class="dv green">¥${fmt(total)}</div></div>
+      <div class="dash-card"><div class="dl">办理笔数</div><div class="dv blue">${cnt}</div></div>
+      <div class="dash-card"><div class="dl">笔均酬金</div><div class="dv gold">¥${fmt(cnt?total/cnt:0)}</div></div>
+      <div class="dash-card"><div class="dl">客户数</div><div class="dv teal">${new Set(mh.map(r=>r.phone).filter(Boolean)).size}</div></div>
+    </div>
+    <div class="panel pad">
+      <h3 style="margin:0 0 12px;font-size:14px">酬金分类占比</h3>
+      <div class="bar-wrap">
+        <div class="bar-row"><span class="bar-label">主套餐业务</span><div class="bar-track"><div class="bar-fill blue" style="width:${mx?tm/mx*100:0}%">¥${fmt(tm)}</div></div><span class="bar-val">${total?(tm/total*100).toFixed(1):0}%</span></div>
+        <div class="bar-row"><span class="bar-label">非主套餐业务</span><div class="bar-track"><div class="bar-fill gold" style="width:${mx?tn/mx*100:0}%">¥${fmt(tn)}</div></div><span class="bar-val">${total?(tn/total*100).toFixed(1):0}%</span></div>
+        <div class="bar-row"><span class="bar-label">手续费</span><div class="bar-track"><div class="bar-fill teal" style="width:${mx?tf/mx*100:0}%">¥${fmt(tf)}</div></div><span class="bar-val">${total?(tf/total*100).toFixed(1):0}%</span></div>
+      </div>
+    </div>
+    <div class="panel pad" style="margin-top:16px">
+      <h3 style="margin:0 0 12px;font-size:14px">业务酬金排行 TOP10</h3>
+      <table class="rules"><thead><tr><th>排名</th><th>业务</th><th style="text-align:right">酬金合计</th></tr></thead><tbody>
+      ${topBiz.map((b,i)=>`<tr><td style="font-weight:800">${i+1}</td><td>${b[0]}</td><td style="text-align:right;font-family:var(--mono);font-weight:800;color:var(--money)">¥${fmt(b[1])}</td></tr>`).join('')}
+      </tbody></table>
+    </div>`;
+}
+
+/* ===== RULES LIBRARY ===== */
+function renderRulesLib(){
+  const box=$('rulesContainer');box.innerHTML='';let total=0;
+  ['主套餐','非主套餐','手续费'].forEach(g=>{
+    const rs=RULES.filter(r=>r.group===g);total+=rs.length;if(!rs.length)return;
+    const gm=GM[g],wrap=document.createElement('div');wrap.className='rule-group';
+    wrap.innerHTML=`<div class="rg-head"><span class="dot" style="background:${gm.c}"></span><h3>${gm.label}</h3><span class="n">${rs.length}条</span></div>`;
+    const tbl=document.createElement('table');tbl.className='rules';
+    tbl.innerHTML=`<thead><tr><th style="width:36%">业务</th><th style="width:16%">计算</th><th style="width:32%">基数/叠加</th><th style="width:16%;text-align:right">操作</th></tr></thead><tbody></tbody>`;
+    const tb=tbl.querySelector('tbody');
+    rs.forEach(r=>{const tr=document.createElement('tr');
+      let calc,bi;
+      if(r.calc==='fixed'){calc=`<span class="calc-badge fix">¥${fmt(r.baseRate)}</span>/${r.unit||'笔'}`;bi='固定';}
+      else{calc=`<span class="calc-badge pct">${r.baseRate}%</span>×基数`;bi=`${r.baseLabel||'-'}${isGlobal(r)?'<span class="tag">🔗继承</span>':''}`;}
+      const at=(r.addons||[]).map(a=>`<span class="tag add">${a.label}+${a.rate}%</span>`).join('')||'<span style="color:var(--muted);font-size:11px">无</span>';
+      tr.innerHTML=`<td><div class="r-name">${r.name}</div><div class="r-meta">${r.category||''}${r.note?' · '+r.note:''}</div></td><td>${calc}</td><td>${bi}<div style="margin-top:4px">${at}</div></td>
+        <td><div class="row-actions"><button class="btn sm" onclick="openRuleEditor('${r.id}')">编辑</button><button class="btn sm danger" onclick="deleteRule('${r.id}')">删除</button></div></td>`;
+      tb.appendChild(tr);});
+    wrap.appendChild(tbl);box.appendChild(wrap);});
+  $('ruleCount').textContent=`共${total}条`;
+}
+
+/* ===== RULE EDITOR ===== */
+function onCalcChange(){const f=$('f_calc').value==='fixed';$('wrap_baseLabel').style.display=f?'none':'flex';$('wrap_addons').style.display=f?'none':'block';$('lbl_baseRate').textContent=f?'固定金额（元/单位）':'基础比例（%）';onBaseLabelChange();}
+function onBaseLabelChange(){$('wrap_customLabel').style.display=$('f_baseLabel').value==='自定义'?'flex':'none';}
+function addAddonRow(l,r){const box=$('addonRows'),div=document.createElement('div');div.className='addon-row';
+  div.innerHTML=`<input class="an" type="text" placeholder="名称" value="${(l||'').replace(/"/g,'&quot;')}"><input class="ar" type="number" step="0.01" placeholder="+%" value="${r||''}"><button class="x" type="button" onclick="this.parentElement.remove()">×</button>`;box.appendChild(div);}
+function openRuleEditor(id){
+  editingId=id||null;$('modalTitle').textContent=id?'编辑规则':'新增规则';$('addonRows').innerHTML='';
+  if(id){const r=ruleById(id);$('f_group').value=r.group;$('f_category').value=r.category||'';$('f_name').value=r.name;$('f_calc').value=r.calc;
+    const opts=[...$('f_baseLabel').options].map(o=>o.value);
+    if(opts.includes(r.baseLabel))$('f_baseLabel').value=r.baseLabel;else{$('f_baseLabel').value='自定义';$('f_customLabel').value=r.baseLabel;}
+    $('f_baseRate').value=r.baseRate;$('f_unit').value=r.unit||'';$('f_note').value=r.note||'';
+    (r.addons||[]).forEach(a=>addAddonRow(a.label,a.rate));
+  }else{$('f_group').value='手续费';$('f_category').value='';$('f_name').value='';$('f_calc').value='fixed';$('f_baseLabel').value='套餐贡献';$('f_baseRate').value='';$('f_unit').value='笔';$('f_note').value='';$('f_customLabel').value='';}
+  onCalcChange();$('ruleModal').classList.add('show');
+}
+function saveRule(){
+  const name=$('f_name').value.trim();if(!name){toast('请填写名称');return;}
+  const calc=$('f_calc').value,br=parseFloat($('f_baseRate').value);if(isNaN(br)){toast('请填写金额/比例');return;}
+  let bl=$('f_baseLabel').value;if(bl==='自定义')bl=$('f_customLabel').value.trim()||'自定义';
+  let addons=[];if(calc==='percent')$('addonRows').querySelectorAll('.addon-row').forEach(row=>{const l=row.querySelector('.an').value.trim(),rt=parseFloat(row.querySelector('.ar').value);if(l&&!isNaN(rt))addons.push({id:'a'+rnd(),label:l,rate:rt});});
+  const data={group:$('f_group').value,category:$('f_category').value.trim(),name,calc,baseLabel:bl,baseRate:br,unit:$('f_unit').value.trim()||'笔',note:$('f_note').value.trim(),addons};
+  if(editingId){Object.assign(ruleById(editingId),data);toast('已更新');}else{data.id='r'+rnd();RULES.push(data);toast('已添加');}
+  lsSet(LS_RULES,RULES);buildSelect();renderRulesLib();renderLines();closeModal('ruleModal');
+}
+function deleteRule(id){const r=ruleById(id);if(!r||!confirm(`删除「${r.name}」？`))return;RULES=RULES.filter(x=>x.id!==id);LINES=LINES.filter(l=>l.ruleId!==id);lsSet(LS_RULES,RULES);buildSelect();renderRulesLib();renderLines();toast('已删除');}
+
+/* ===== IMPORT/EXPORT/RESET ===== */
+function exportRulesJSON(){const b=new Blob([JSON.stringify(RULES,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='酬金规则_'+today()+'.json';a.click();URL.revokeObjectURL(a.href);toast('已导出');}
+function importRules(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d)||!d[0]?.name)throw 0;if(!confirm('导入将覆盖规则，确定？'))return;RULES=d;LINES=[];lsSet(LS_RULES,RULES);buildSelect();renderRulesLib();renderLines();toast('已导入');}catch(err){toast('格式错误');}};r.readAsText(f);e.target.value='';}
+function resetRules(){if(!confirm('恢复默认规则？'))return;RULES=defaultRules();LINES=[];lsSet(LS_RULES,RULES);buildSelect();renderRulesLib();renderLines();toast('已恢复');}
+
+/* ===== MODAL BACKDROP ===== */
+document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show');}));
+
+/* ===== INIT ===== */
+$('gDate').value=today();
+$('dashMonth').value=today().slice(0,7);
+buildSelect();buildTplSelect();renderLines();
+</script>
+</body>
+</html>
