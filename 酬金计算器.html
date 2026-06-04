@@ -339,54 +339,666 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 <script>
 /* ===== DEFAULT RULES ===== */
 function defaultRules(){
-  const A=(l,r)=>({id:'a'+rnd(),label:l,rate:r});
   return [
-    {id:'r_new1',group:'主套餐',category:'新入网',name:'新入网-59元以下',calc:'percent',baseLabel:'套餐贡献',baseRate:100,unit:'笔',addons:[A('细分/竞对/收费副卡',300),A('新身份证',200),A('关怀',400),A('其他(卡槽运营·重点客群)',50)],note:''},
-    {id:'r_new2',group:'主套餐',category:'新入网',name:'新入网-【59-99元）',calc:'percent',baseLabel:'套餐贡献',baseRate:200,unit:'笔',addons:[A('新身份证',200),A('关怀',400),A('其他(卡槽运营·重点客群)',50)],note:''},
-    {id:'r_new3',group:'主套餐',category:'新入网',name:'新入网-99元及以上',calc:'percent',baseLabel:'套餐贡献',baseRate:400,unit:'笔',addons:[A('冀享',200),A('新身份证',200),A('关怀',400),A('其他(卡槽运营·重点客群)',50)],note:''},
-    {id:'r_up1',group:'主套餐',category:'普通升档',name:'普通升档-59元以下',calc:'percent',baseLabel:'套餐贡献差价',baseRate:300,unit:'笔',addons:[A('关怀',400),A('其他(卡槽运营·重点客群)',100)],note:''},
-    {id:'r_up2',group:'主套餐',category:'普通升档',name:'普通升档-【59，99）',calc:'percent',baseLabel:'套餐贡献差价',baseRate:400,unit:'笔',addons:[A('关怀',400),A('其他(卡槽运营·重点客群)',100)],note:''},
-    {id:'r_up3',group:'主套餐',category:'普通升档',name:'普通升档-99元及以上',calc:'percent',baseLabel:'套餐贡献差价',baseRate:500,unit:'笔',addons:[A('冀享',200),A('关怀',400),A('其他(卡槽运营·重点客群)',100)],note:''},
-    {id:'r_jia',group:'主套餐',category:'全家福',name:'全家福升档',calc:'percent',baseLabel:'套餐贡献差价',baseRate:600,unit:'笔',addons:[],note:'600/700%改基础比例；月分成填手动附加'},
-    {id:'r_kd',group:'非主套餐',category:'宽带',name:'宽带',calc:'percent',baseLabel:'套餐贡献',baseRate:100,unit:'笔',addons:[A('同办硬件',100)],note:'继承全局套餐贡献'},
-    {id:'r_kdtv',group:'非主套餐',category:'融合',name:'宽带+电视',calc:'percent',baseLabel:'套餐贡献',baseRate:200,unit:'笔',addons:[A('同办硬件',100)],note:'继承全局'},
-    {id:'r_fq',group:'非主套餐',category:'分期金币',name:'分期、金币',calc:'percent',baseLabel:'套餐贡献',baseRate:200,unit:'笔',addons:[],note:'继承全局'},
-    {id:'r_pm',group:'非主套餐',category:'连续包月',name:'连续包月(流量/语音/权益/智能硬件服务包)',calc:'percent',baseLabel:'月贡献价值',baseRate:400,unit:'笔',addons:[],note:''},
-    {id:'r_dun',group:'非主套餐',category:'趸交',name:'趸交包',calc:'percent',baseLabel:'趸交费用',baseRate:50,unit:'笔',addons:[],note:''},
-    {id:'r_fttr',group:'非主套餐',category:'趸交',name:'FTTR、云电脑(新资费)',calc:'percent',baseLabel:'趸交费用',baseRate:40,unit:'笔',addons:[],note:''},
-    {id:'r_big',group:'非主套餐',category:'大颗粒',name:'大颗粒(及部分新业务)',calc:'percent',baseLabel:'月贡献价值',baseRate:500,unit:'笔',addons:[],note:''},
-    {id:'r_tvadd',group:'非主套餐',category:'融合',name:'电视+增值',calc:'percent',baseLabel:'月贡献价值',baseRate:200,unit:'笔',addons:[],note:''},
-    {id:'r_hf',group:'非主套餐',category:'话费合约',name:'话费合约',calc:'percent',baseLabel:'预存费用',baseRate:20,unit:'笔',addons:[A('优质客群(58元+非硬融/全球通非硬融/中高端/二三类修复)',20)],note:'优质40%，其他20%'},
-    {id:'r_f1',group:'手续费',category:'业务包类',name:'趸交+分月小硬件',calc:'fixed',baseRate:20,unit:'笔',addons:[],note:''},
-    {id:'r_f2',group:'手续费',category:'业务包类',name:'云电脑(老资费)',calc:'fixed',baseRate:50,unit:'笔',addons:[],note:''},
-    {id:'r_f3',group:'手续费',category:'拉新',name:'APP拉新',calc:'fixed',baseRate:10,unit:'笔',addons:[],note:''},
-    {id:'r_f4',group:'手续费',category:'拉新',name:'熟客拉新',calc:'fixed',baseRate:2,unit:'笔',addons:[],note:''},
-    {id:'r_f5',group:'手续费',category:'拉新',name:'电子学生证',calc:'fixed',baseRate:30,unit:'笔',addons:[],note:''},
-    {id:'r_f6',group:'手续费',category:'转化',name:'校园接盘',calc:'fixed',baseRate:30,unit:'笔',addons:[],note:''},
-    {id:'r_f7',group:'手续费',category:'转化',name:'平价接盘手续费',calc:'fixed',baseRate:30,unit:'笔',addons:[],note:''},
-    {id:'r_f8',group:'手续费',category:'基础及服务',name:'宽带挽留',calc:'fixed',baseRate:50,unit:'笔',addons:[],note:''},
-    {id:'r_f9',group:'手续费',category:'基础及服务',name:'宽带欠销',calc:'fixed',baseRate:30,unit:'笔',addons:[],note:''},
-    {id:'r_f10',group:'手续费',category:'基础及服务',name:'机顶盒回收',calc:'fixed',baseRate:50,unit:'台',addons:[],note:''},
-    {id:'r_f11',group:'手续费',category:'基础及服务',name:'充值缴费',calc:'percent',baseLabel:'充值金额',baseRate:0.30,unit:'笔',addons:[],note:'0.30%'},
-    {id:'r_f12',group:'手续费',category:'基础及服务',name:'蓄水',calc:'fixed',baseRate:20,unit:'笔',addons:[],note:''},
-    {id:'r_f13',group:'手续费',category:'融合',name:'爱家亲情圈',calc:'fixed',baseRate:1,unit:'户',addons:[],note:'1元/户'},
-    {id:'r_f14',group:'手续费',category:'融合',name:'客户代付',calc:'fixed',baseRate:25,unit:'笔',addons:[],note:''},
-    {id:'r_f15',group:'手续费',category:'融合',name:'加号提速',calc:'fixed',baseRate:40,unit:'笔',addons:[],note:''},
-    {id:'r_f16',group:'手续费',category:'融合',name:'亲情网成员添加',calc:'fixed',baseRate:15,unit:'个',addons:[],note:''},
-    {id:'r_f17',group:'手续费',category:'融合',name:'二宽+电视',calc:'fixed',baseRate:30,unit:'笔',addons:[],note:''},
-    {id:'r_f18',group:'手续费',category:'融合',name:'多人融宽、二宽',calc:'fixed',baseRate:50,unit:'笔',addons:[],note:''},
-    {id:'r_f19',group:'手续费',category:'融合',name:'全球通客户非融合客户融合',calc:'fixed',baseRate:30,unit:'笔',addons:[],note:''},
-    {id:'r_f20',group:'手续费',category:'终端',name:'价值提升(拉新/2G3G4G升5G/信用购/异网主卡/5GA)',calc:'fixed',baseRate:180,unit:'台',addons:[],note:''},
-    {id:'r_f21',group:'手续费',category:'终端',name:'泛终端',calc:'fixed',baseRate:50,unit:'台',addons:[],note:''},
-    {id:'r_f22',group:'手续费',category:'终端',name:'以旧换新',calc:'fixed',baseRate:30,unit:'台',addons:[],note:''},
-    {id:'r_f23',group:'手续费',category:'终端',name:'泛全联盟合作',calc:'fixed',baseRate:25,unit:'笔',addons:[],note:''},
-    {id:'r_f24',group:'手续费',category:'终端',name:'领航',calc:'fixed',baseRate:90,unit:'笔',addons:[],note:''},
-    {id:'r_f25',group:'手续费',category:'终端',name:'战略型终端激励',calc:'fixed',baseRate:20,unit:'台',addons:[],note:''},
-  ];
+  {
+    "id": "r_new1",
+    "group": "主套餐",
+    "category": "新入网",
+    "name": "新入网-59元以下",
+    "calc": "percent",
+    "baseLabel": "套餐贡献",
+    "baseRate": 100,
+    "unit": "笔",
+    "addons": [
+      {
+        "id": "aebeswm",
+        "label": "细分/竞对/收费副卡",
+        "rate": 300
+      },
+      {
+        "id": "a6lnh64",
+        "label": "新身份证",
+        "rate": 200
+      },
+      {
+        "id": "ac8uw8c",
+        "label": "关怀",
+        "rate": 400
+      },
+      {
+        "id": "aypj8a4",
+        "label": "其他(卡槽运营·重点客群)",
+        "rate": 50
+      },
+      {
+        "id": "ajbhe97",
+        "label": "同办分期/金币",
+        "rate": 200
+      },
+      {
+        "id": "al195np",
+        "label": "同办宽带",
+        "rate": 100
+      },
+      {
+        "id": "aaig8fw",
+        "label": "宽带同办电视",
+        "rate": 200
+      },
+      {
+        "id": "adlhl89",
+        "label": "同办硬件",
+        "rate": 100
+      }
+    ],
+    "note": ""
+  },
+  {
+    "id": "r_new2",
+    "group": "主套餐",
+    "category": "新入网",
+    "name": "新入网-【59-99元）",
+    "calc": "percent",
+    "baseLabel": "套餐贡献",
+    "baseRate": 200,
+    "unit": "笔",
+    "addons": [
+      {
+        "id": "ata8tyy",
+        "label": "新身份证",
+        "rate": 200
+      },
+      {
+        "id": "ae46687",
+        "label": "关怀",
+        "rate": 400
+      },
+      {
+        "id": "abtly26",
+        "label": "其他(卡槽运营·重点客群)",
+        "rate": 50
+      },
+      {
+        "id": "acigkpg",
+        "label": "同办分期、金币",
+        "rate": 200
+      },
+      {
+        "id": "ayzxe3d",
+        "label": "同办宽带",
+        "rate": 100
+      },
+      {
+        "id": "awsw2pt",
+        "label": "宽带同办电视",
+        "rate": 200
+      },
+      {
+        "id": "a58u027",
+        "label": "同办硬件",
+        "rate": 100
+      }
+    ],
+    "note": ""
+  },
+  {
+    "id": "r_new3",
+    "group": "主套餐",
+    "category": "新入网",
+    "name": "新入网-99元及以上",
+    "calc": "percent",
+    "baseLabel": "套餐贡献",
+    "baseRate": 400,
+    "unit": "笔",
+    "addons": [
+      {
+        "id": "am17n05",
+        "label": "冀享",
+        "rate": 200
+      },
+      {
+        "id": "aj4xu9v",
+        "label": "新身份证",
+        "rate": 200
+      },
+      {
+        "id": "amsae46",
+        "label": "关怀",
+        "rate": 400
+      },
+      {
+        "id": "a72zw4s",
+        "label": "其他(卡槽运营·重点客群)",
+        "rate": 50
+      },
+      {
+        "id": "afsv7zi",
+        "label": "同办分期、金币",
+        "rate": 200
+      },
+      {
+        "id": "a92paq6",
+        "label": "同办宽带",
+        "rate": 100
+      },
+      {
+        "id": "airwwhv",
+        "label": "宽带同办电视",
+        "rate": 200
+      },
+      {
+        "id": "acp2o5y",
+        "label": "同办硬件",
+        "rate": 100
+      }
+    ],
+    "note": ""
+  },
+  {
+    "id": "r_up1",
+    "group": "主套餐",
+    "category": "普通升档",
+    "name": "普通升档-59元以下",
+    "calc": "percent",
+    "baseLabel": "套餐贡献差价",
+    "baseRate": 300,
+    "unit": "笔",
+    "addons": [
+      {
+        "id": "aal5i3l",
+        "label": "关怀",
+        "rate": 400
+      },
+      {
+        "id": "a8uxiaf",
+        "label": "其他(卡槽运营·重点客群)",
+        "rate": 100
+      },
+      {
+        "id": "anjphbe",
+        "label": "同办分期、金币",
+        "rate": 200
+      },
+      {
+        "id": "awgv3ar",
+        "label": "同办宽带",
+        "rate": 100
+      },
+      {
+        "id": "a9jr8rr",
+        "label": "宽带同办电视",
+        "rate": 200
+      },
+      {
+        "id": "a5x6kf5",
+        "label": "同办硬件",
+        "rate": 100
+      }
+    ],
+    "note": ""
+  },
+  {
+    "id": "r_up2",
+    "group": "主套餐",
+    "category": "普通升档",
+    "name": "普通升档-【59，99）",
+    "calc": "percent",
+    "baseLabel": "套餐贡献差价",
+    "baseRate": 400,
+    "unit": "笔",
+    "addons": [
+      {
+        "id": "a2ee998",
+        "label": "关怀",
+        "rate": 400
+      },
+      {
+        "id": "ab0bkzi",
+        "label": "其他(卡槽运营·重点客群)",
+        "rate": 100
+      },
+      {
+        "id": "aer2l6x",
+        "label": "同办分期、金币",
+        "rate": 200
+      },
+      {
+        "id": "ahoyqp5",
+        "label": "同办宽带",
+        "rate": 100
+      },
+      {
+        "id": "am815nf",
+        "label": "宽带同办电视",
+        "rate": 200
+      },
+      {
+        "id": "a8zdqhy",
+        "label": "同办硬件",
+        "rate": 100
+      }
+    ],
+    "note": ""
+  },
+  {
+    "id": "r_up3",
+    "group": "主套餐",
+    "category": "普通升档",
+    "name": "普通升档-99元及以上",
+    "calc": "percent",
+    "baseLabel": "套餐贡献差价",
+    "baseRate": 500,
+    "unit": "笔",
+    "addons": [
+      {
+        "id": "ajis4rb",
+        "label": "冀享",
+        "rate": 200
+      },
+      {
+        "id": "aaay8l8",
+        "label": "关怀",
+        "rate": 400
+      },
+      {
+        "id": "aetos3p",
+        "label": "其他(卡槽运营·重点客群)",
+        "rate": 100
+      },
+      {
+        "id": "aw5dhsy",
+        "label": "同办分期、金币",
+        "rate": 200
+      },
+      {
+        "id": "ac6vtc3",
+        "label": "同办宽带",
+        "rate": 100
+      },
+      {
+        "id": "amqzmu8",
+        "label": "宽带同办电视",
+        "rate": 200
+      },
+      {
+        "id": "a9d9k27",
+        "label": "同办硬件",
+        "rate": 100
+      }
+    ],
+    "note": ""
+  },
+  {
+    "id": "r_jia",
+    "group": "主套餐",
+    "category": "全家福",
+    "name": "全家福升档",
+    "calc": "percent",
+    "baseLabel": "套餐贡献差价",
+    "baseRate": 600,
+    "unit": "笔",
+    "addons": [],
+    "note": "600/700%改基础比例；月分成填手动附加"
+  },
+  {
+    "id": "r_pm",
+    "group": "非主套餐",
+    "category": "连续包月",
+    "name": "连续包月(流量/语音/权益/智能硬件服务包)",
+    "calc": "percent",
+    "baseLabel": "月贡献价值",
+    "baseRate": 400,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_dun",
+    "group": "非主套餐",
+    "category": "趸交",
+    "name": "趸交包",
+    "calc": "percent",
+    "baseLabel": "趸交费用",
+    "baseRate": 50,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_fttr",
+    "group": "非主套餐",
+    "category": "趸交",
+    "name": "FTTR、云电脑(新资费)",
+    "calc": "percent",
+    "baseLabel": "趸交费用",
+    "baseRate": 40,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_big",
+    "group": "非主套餐",
+    "category": "大颗粒",
+    "name": "大颗粒(及部分新业务)",
+    "calc": "percent",
+    "baseLabel": "月贡献价值",
+    "baseRate": 500,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_tvadd",
+    "group": "非主套餐",
+    "category": "融合",
+    "name": "电视+增值",
+    "calc": "percent",
+    "baseLabel": "月贡献价值",
+    "baseRate": 200,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_hf",
+    "group": "非主套餐",
+    "category": "话费合约",
+    "name": "话费合约",
+    "calc": "percent",
+    "baseLabel": "预存费用",
+    "baseRate": 20,
+    "unit": "笔",
+    "addons": [
+      {
+        "id": "ae8cene",
+        "label": "优质客群(58元+非硬融/全球通非硬融/中高端/二三类修复)",
+        "rate": 20
+      }
+    ],
+    "note": "优质40%，其他20%"
+  },
+  {
+    "id": "r_f1",
+    "group": "手续费",
+    "category": "业务包类",
+    "name": "趸交+分月小硬件",
+    "calc": "fixed",
+    "baseRate": 20,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f2",
+    "group": "手续费",
+    "category": "业务包类",
+    "name": "云电脑(老资费)",
+    "calc": "fixed",
+    "baseRate": 50,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f3",
+    "group": "手续费",
+    "category": "拉新",
+    "name": "APP拉新",
+    "calc": "fixed",
+    "baseRate": 10,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f4",
+    "group": "手续费",
+    "category": "拉新",
+    "name": "熟客拉新",
+    "calc": "fixed",
+    "baseRate": 2,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f5",
+    "group": "手续费",
+    "category": "拉新",
+    "name": "电子学生证",
+    "calc": "fixed",
+    "baseRate": 30,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f6",
+    "group": "手续费",
+    "category": "转化",
+    "name": "校园接盘",
+    "calc": "fixed",
+    "baseRate": 30,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f7",
+    "group": "手续费",
+    "category": "转化",
+    "name": "平价接盘手续费",
+    "calc": "fixed",
+    "baseRate": 30,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f8",
+    "group": "手续费",
+    "category": "基础及服务",
+    "name": "宽带挽留",
+    "calc": "fixed",
+    "baseRate": 50,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f9",
+    "group": "手续费",
+    "category": "基础及服务",
+    "name": "宽带欠销",
+    "calc": "fixed",
+    "baseRate": 30,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f10",
+    "group": "手续费",
+    "category": "基础及服务",
+    "name": "机顶盒回收",
+    "calc": "fixed",
+    "baseRate": 50,
+    "unit": "台",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f11",
+    "group": "手续费",
+    "category": "基础及服务",
+    "name": "充值缴费",
+    "calc": "percent",
+    "baseLabel": "充值金额",
+    "baseRate": 0.3,
+    "unit": "笔",
+    "addons": [],
+    "note": "0.30%"
+  },
+  {
+    "id": "r_f12",
+    "group": "手续费",
+    "category": "基础及服务",
+    "name": "蓄水",
+    "calc": "fixed",
+    "baseRate": 20,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f13",
+    "group": "手续费",
+    "category": "融合",
+    "name": "爱家亲情圈",
+    "calc": "fixed",
+    "baseRate": 1,
+    "unit": "户",
+    "addons": [],
+    "note": "1元/户"
+  },
+  {
+    "id": "r_f14",
+    "group": "手续费",
+    "category": "融合",
+    "name": "客户代付",
+    "calc": "fixed",
+    "baseRate": 25,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f15",
+    "group": "手续费",
+    "category": "融合",
+    "name": "加号提速",
+    "calc": "fixed",
+    "baseRate": 40,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f16",
+    "group": "手续费",
+    "category": "融合",
+    "name": "亲情网成员添加",
+    "calc": "fixed",
+    "baseRate": 15,
+    "unit": "个",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f17",
+    "group": "手续费",
+    "category": "融合",
+    "name": "二宽+电视",
+    "calc": "fixed",
+    "baseRate": 30,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f18",
+    "group": "手续费",
+    "category": "融合",
+    "name": "多人融宽、二宽",
+    "calc": "fixed",
+    "baseRate": 50,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f19",
+    "group": "手续费",
+    "category": "融合",
+    "name": "全球通客户非融合客户融合",
+    "calc": "fixed",
+    "baseRate": 30,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f20",
+    "group": "手续费",
+    "category": "终端",
+    "name": "价值提升(拉新/2G3G4G升5G/信用购/异网主卡/5GA)",
+    "calc": "fixed",
+    "baseRate": 180,
+    "unit": "台",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f21",
+    "group": "手续费",
+    "category": "终端",
+    "name": "泛终端",
+    "calc": "fixed",
+    "baseRate": 50,
+    "unit": "台",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f22",
+    "group": "手续费",
+    "category": "终端",
+    "name": "以旧换新",
+    "calc": "fixed",
+    "baseRate": 30,
+    "unit": "台",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f23",
+    "group": "手续费",
+    "category": "终端",
+    "name": "泛全联盟合作",
+    "calc": "fixed",
+    "baseRate": 25,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f24",
+    "group": "手续费",
+    "category": "终端",
+    "name": "领航",
+    "calc": "fixed",
+    "baseRate": 90,
+    "unit": "笔",
+    "addons": [],
+    "note": ""
+  },
+  {
+    "id": "r_f25",
+    "group": "手续费",
+    "category": "终端",
+    "name": "战略型终端激励",
+    "calc": "fixed",
+    "baseRate": 20,
+    "unit": "台",
+    "addons": [],
+    "note": ""
+  }
+];
 }
 
 /* ===== STORAGE ===== */
-const LS_RULES='hbyd_rules_v3',LS_HIST='hbyd_hist_v1',LS_TPL='hbyd_tpl_v1';
+const LS_RULES='hbyd_rules_v4',LS_HIST='hbyd_hist_v1',LS_TPL='hbyd_tpl_v1';
 let storeOk=true;try{localStorage.setItem('__t','1');localStorage.removeItem('__t');}catch(e){storeOk=false;}
 function lsGet(k,d){if(!storeOk)return d;try{const s=localStorage.getItem(k);return s?JSON.parse(s):d;}catch(e){return d;}}
 function lsSet(k,v){if(storeOk)try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
